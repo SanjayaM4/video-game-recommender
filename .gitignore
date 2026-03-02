@@ -1,6 +1,18 @@
-venv/
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+venv/
+
+# Data files
+data/raw/*
+*.zip
+*.json
+
+# Jupyter checkpoints
 .ipynb_checkpoints/
-.env
+
+# OS files
 .DS_Store
+Thumbs.db
