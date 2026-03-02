@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from preprocessing import PROCESSED_PATH, load_and_clean_json
+from src.preprocessing import PROCESSED_PATH, load_and_clean_json
 
 class SteamRecommender:
     def __init__(self):

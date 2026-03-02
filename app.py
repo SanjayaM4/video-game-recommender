@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from recommender import SteamRecommender
+from src.recommender import SteamRecommender
 
 @st.cache_resource
 def get_recommender():
