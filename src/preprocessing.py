@@ -13,15 +13,15 @@ def load_and_clean_json():
     # Reset index to make the AppID (the keys) a column
     df = df.reset_index().rename(columns={'index': 'AppID'})
 
-    # 1. Use LOWERCASE names as they appear in your JSON
-    cols_to_keep = ["name", "genres", "tags", "categories", "positive", "negative", "price"]
+    # Use names as they appear in your JSON
+    cols_to_keep = ["name", "genres", "tags", "categories", "positive", "negative", "price", "header_image"]
     df = df[cols_to_keep].copy()
 
-    # 2. Cleanup Names
+    # Cleanup Names
     df = df.dropna(subset=["name"])
     df["name"] = df["name"].astype(str).str.strip()
 
-    # 3. Handle JSON specific structures
+    # Handle JSON specific structures
     # 'genres' and 'categories' are lists: ["Action", "Indie"]
     # 'tags' is a dict: {"Action": 50, "Indie": 20}
     
@@ -35,22 +35,22 @@ def load_and_clean_json():
     for col in ["genres", "tags", "categories"]:
         df[col] = df[col].apply(process_features)
 
-    # 4. Create the search string
+    # Create the search string
     df["combined_features"] = (
         df["genres"] + " " + 
         df["tags"] + " " + 
         df["categories"]
     ).str.lower()
 
-    # 5. Rename columns back to Capitalized for your Recommender UI (Optional)
+    # Rename columns back to Capitalized for UI
     df = df.rename(columns={
         "name": "Name",
         "positive": "Positive",
         "negative": "Negative",
-        "price": "Price"
+        "header_image": "HeaderImage"
     })
 
-    # 6. Save to Parquet
+    # Save to Parquet
     os.makedirs("data/processed", exist_ok=True)
     df.to_parquet(PROCESSED_PATH, index=False)
     print(f"Success! Processed data saved to {PROCESSED_PATH}")

@@ -14,7 +14,6 @@ class SteamRecommender:
             print("Loading optimized dataset...")
             self.df = pd.read_parquet(PROCESSED_PATH)
 
-        # --- ADD THIS: Calculate Quality Score (Bayesian-ish Average) ---
         print("Calculating quality scores...")
         
         # Total number of reviews (votes)
@@ -28,7 +27,6 @@ class SteamRecommender:
         
         # Weighted Rating formula
         self.df['quality_score'] = (v / (v + m) * R) + (m / (v + m) * C)
-        # ---------------------------------------------------------------
 
         print("Vectorizing features...")
         self.vectorizer = TfidfVectorizer(stop_words="english", max_features=10000)
@@ -36,7 +34,7 @@ class SteamRecommender:
         print("Recommender ready.")
         
 
-    def recommend(self, game_name, top_n=10):
+    def recommend(self, game_name, top_n=12):
         query = game_name.strip().lower()
         
         # Check for matches in the "Name" column
@@ -51,20 +49,22 @@ class SteamRecommender:
 
         idx = matches.index[0]
         
-        # 1. Content Similarity (TF-IDF)
+        # Content Similarity (TF-IDF)
         content_scores = cosine_similarity(self.tfidf_matrix[idx], self.tfidf_matrix).flatten()
         
-        # 2. Hybrid Calculation
+        # Hybrid Calculation
         # We multiply similarity by the quality score to "boost" good games
         # We use a small 'alpha' to ensure we don't ignore niche games entirely
         alpha = 0.5
         hybrid_scores = content_scores * (1 + alpha * self.df['quality_score'])
 
-        # 3. Get Top Results
-        similar_indices = hybrid_scores.argsort()[-(top_n + 1):][::-1]
-        similar_indices = [i for i in similar_indices if i != idx]
 
-        return self.df.iloc[similar_indices][["Name", "Positive", "Negative", "Price"]]
+        similar_indices = hybrid_scores.argsort()[-20:][::-1]
+        filtered_indices = [i for i in similar_indices if i != idx]
+        final_selection = filtered_indices[:top_n]
+
+
+        return self.df.iloc[final_selection][["Name", "Positive", "Negative", "HeaderImage"]]
 
 if __name__ == "__main__":
     recommender = SteamRecommender()
