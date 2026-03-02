@@ -1,6 +1,6 @@
 # Steam Discovery Engine
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_svg.svg)](https://video-game-recommender-hhhfbqvwznps9quz5t635e.streamlit.app/)
+[Launch the Steam Game Recommender](https://video-game-recommender-hhhfbqvwznps9quz5t635e.streamlit.app/)
 
 A high-performance **Hybrid Recommender System** that discovers similar video games across the Steam library. This project goes beyond basic keyword matching by combining high-dimensional text vectorization with statistical quality-weighting.
 
